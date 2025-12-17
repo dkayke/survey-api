@@ -252,3 +252,17 @@ flowchart LR
     Service -.->|Retorna DTO| Controller
     Controller -.->|Retorna HTTP 200 ou 404| UserPublic
 ```
+
+---
+
+## Sobre
+
+Este projeto foi desenvolvido como parte de uma iniciativa acadêmica para demonstrar competências em **Arquitetura de Software**, **.NET** e **Domain-Driven Design**.
+
+| [<img src="https://github.com/dkayke.png?size=80" width=80><br><sub>@dkayke</sub>](https://github.com/filipedeschamps) |
+| :---: |
+ 
+
+<br> *Arquiteto de Software / Desenvolvedor* | [LinkedIn](https://www.linkedin.com/in/dkayke) <br>
+
+ 
