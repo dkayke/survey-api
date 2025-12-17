@@ -81,7 +81,7 @@ O uso de **Records** para DTOs garante imutabilidade e simplifica a transferênc
 3.  Restaure os pacotes NuGet (o VS fará isso automaticamente ou via `dotnet restore`).
 4.  Defina o projeto **API** como "StartUp Project".
 5.  Execute a aplicação (F5 ou botão Play).
-6.  Abra o navegador no endereço https://localhost:7254/swagger (depende de certificado SSL instalado) ou http://localhost:5156/swagger.
+6.  Abra o navegador no endereço `http://localhost:<porta>/swagger`
 
 --- 
 
@@ -106,4 +106,149 @@ O uso de **Records** para DTOs garante imutabilidade e simplifica a transferênc
     }
   ]
 }
+```
+
+## 7. Diagramas
+
+### Diagrama de Contexto (Nível 1)
+
+Este diagrama é a visão de mais alto nível do sistema, conhecida como "Visão de Caixa Preta". Ele define as fronteiras do sistema (o que é o software e o que é externo a ele) e os atores envolvidos.
+
+<b>Atores (Usuários):</b>
+
+- Votante (Público Geral): Representa os milhões de usuários que acessam o sistema exclusivamente para enviar dados (input). Sua interação é unidirecional e focada em escrita (POST /vote).
+
+- Administrador (Criador): O stakeholder que configura o sistema. Ele fornece os dados iniciais (criação da enquete) e consome a informação processada (relatórios).
+
+<b>O Sistema (SurveySystem API):</b>
+
+- Neste nível, não importa se o sistema é feito em .NET, Java ou Python. Ele é representado como uma entidade única responsável por centralizar a lógica de votação.
+
+
+```mermaid
+flowchart LR
+    %% ======= Estilização =======
+    classDef person fill:#ffebd3,stroke:#333,stroke-width:2px;
+    classDef system fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
+
+    %% ======= Nós (Atores e Sistema) =======
+    Voter["👤 Votante<br/>(Público Geral)"]:::person
+    Admin["🧑‍💼 Administrador<br/>(Criador)"]:::person
+    System["🗳️ SurveySystem API<br/>(O Sistema)"]:::system
+
+    %% ======= Relações =======
+    Voter -->|Registra Votos| System
+    Admin -->|Cria Pesquisas e<br/>Vê Relatórios| System
+```
+
+### Diagrama de Fluxo e Arquitetura (Nível Detalhado)
+
+Este diagrama combina a visão do Modelo C4 (Nível Container/Componente) com um Fluxograma de Dados. Ele mostra a "Visão de Caixa Branca", detalhando como uma requisição atravessa as camadas da Clean Architecture e do DDD.
+
+Detalhamento do Fluxo (Da esquerda para a direita):
+
+<b>1. Camada de Apresentação (API Layer - Azul):</b>
+
+- SurveysController: É a porta de entrada. Sua única função é receber o protocolo HTTP (JSON), validar se os dados básicos estão corretos e repassar para quem entende do assunto (Service).
+
+- Swagger: Representa a interface de documentação e teste manual.
+
+<b>2. Camada de Aplicação (Application Layer - Amarelo):</b>
+
+- SurveyService: É o "maestro" ou orquestrador. Ele não sabe salvar no banco, nem sabe validar regras de negócio puras (como "uma pergunta precisa de 2 opções"). Ele apenas coordena: pega o pedido do Controller, converte DTOs em Entidades e chama o Repositório.
+
+- DTOs (Data Transfer Objects): São caixas de transporte. Eles garantem que a estrutura do banco de dados (Entidades) nunca seja exposta diretamente para o mundo externo (API), garantindo segurança e desacoplamento.
+
+<b>3. Camada de Domínio (Domain Layer - Verde):</b>
+
+- Entidades (Entities): Onde vive a regra de negócio. O objeto Survey sabe que não pode existir sem perguntas. O objeto Vote é criado aqui. Esta camada é "pura", ou seja, não depende de bibliotecas externas ou bancos de dados.
+
+- Interfaces: Definem os "contratos". O Domínio diz: "Eu preciso que alguém salve este Voto, não me importa como". Isso é a aplicação do princípio de Inversão de Dependência (DIP) do SOLID.
+
+<b>4. Camada de Infraestrutura (Infrastructure Layer - Roxo):</b>
+
+- Repositórios: São as implementações técnicas dos contratos do Domínio. O VoteRepository diz: "Eu sei como salvar aquele voto que o Domínio pediu: vou usar o EF Core".
+
+- ApplicationDbContext: É a ferramenta (ORM) que traduz os objetos C# para comandos de banco de dados.
+
+<b>5. Persistência (Database - Cinza):</b>
+
+- In-Memory DB: O local físico (neste caso, na memória RAM) onde os dados repousam.
+
+
+```mermaid
+flowchart LR
+    %% ======= Estilização =======
+    classDef actor fill:#ffebd3,stroke:#333,stroke-width:2px;
+    classDef api fill:#e1f5fe,stroke:#0277bd,stroke-width:2px;
+    classDef app fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef domain fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef infra fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px;
+    classDef db fill:#eceff1,stroke:#455a64,stroke-width:2px;
+
+    %% ======= Atores Externos =======
+    UserPublic["👤 Votante - Público"]:::actor
+    UserAdmin["🧑‍💼 Administrador - Criador"]:::actor
+
+    %% ======= Sistema =======
+    subgraph System["🗳️ SurveySystem - ASP.NET Core 9"]
+        direction LR
+
+        %% --- Camada de API ---
+        subgraph ApiLayer["🌐 API Layer - Entrada"]
+            Controller["🎮 SurveysController"]:::api
+            Swagger["📄 Swagger UI"]:::api
+        end
+
+        %% --- Camada de Aplicação ---
+        subgraph AppLayer["🧠 Application Layer - Orquestração"]
+            Service["⚙️ SurveyService"]:::app
+            DTOs["📦 DTOs - VoteRequest, SurveyReportDto"]:::app
+        end
+
+        %% --- Camada de Domínio ---
+        subgraph DomainLayer["📚 Domain Layer - Regras Puras"]
+            Entities["🧱 Entidades - Survey, Question, Vote"]:::domain
+            Interfaces["🔌 Interfaces - ISurveyRepository..."]:::domain
+        end
+
+        %% --- Camada de Infraestrutura ---
+        subgraph InfraLayer["🗄️ Infrastructure Layer - Persistência"]
+            Repos["🛠️ Repositórios Concretos"]:::infra
+            DbContext["🗃️ ApplicationDbContext - EF Core"]:::infra
+        end
+
+        %% --- Banco de Dados ---
+        Database[("💾 In-Memory DB")]:::db
+    end
+
+    %% ======= Fluxos e Conexões =======
+    
+    %% 1. Interação do Usuário
+    UserPublic -->|POST /vote| Controller
+    UserAdmin -->|POST /surveys| Controller
+    Swagger -.->|Documenta| Controller
+
+    %% 2. Controller -> Service
+    Controller -->|1. Recebe JSON e converte| DTOs
+    Controller -->|2. Chama método Async| Service
+
+    %% 3. Service -> Domain
+    Service -->|3. Cria e Valida| Entities
+    Service -->|4. Chama Contrato| Interfaces
+
+    %% 4. Domain -> Infra (CORREÇÃO AQUI)
+    %% Seta pontilhada (Flowchart) em vez de herança (Class Diagram)
+    Interfaces -.->|Implementado por| Repos
+    
+    Repos -->|5. Usa| DbContext
+    
+    %% 5. Infra -> Banco
+    DbContext -->|6. Salva e Consulta| Database
+
+    %% Nota de Retorno
+    Database -.->|Retorna Dados| Repos
+    Repos -.->|Retorna Entidade ou DTO| Service
+    Service -.->|Retorna DTO| Controller
+    Controller -.->|Retorna HTTP 200 ou 404| UserPublic
 ```
