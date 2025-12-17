@@ -1,9 +1,11 @@
 {
 	"info": {
-		"_postman_id": "b3e54366-4113-4a11-8255-099525424558",
+		"_postman_id": "ee8e2255-e1de-471f-b423-e6738f545009",
 		"name": "Survey System API",
 		"description": "Fluxo de teste automatizado para o Sistema de Enquetes.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "48984973",
+		"_collection_link": "https://dannyel-kayke-dk-2413434.postman.co/workspace/Dannyel-Kayke's-Workspace~6fef73df-31eb-4b45-865e-c93b3f2f0b31/collection/48984973-ee8e2255-e1de-471f-b423-e6738f545009?action=share&source=collection_link&creator=48984973"
 	},
 	"item": [
 		{
@@ -34,17 +36,9 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/surveys",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"surveys"
-					]
-				}
-			}
+				"url": "{{baseUrl}}/api/surveys"
+			},
+			"response": []
 		},
 		{
 			"name": "2. Ler Dados (Capturar IDs)",
@@ -76,19 +70,9 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/surveys/{{surveyId}}/report",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"surveys",
-						"{{surveyId}}",
-						"report"
-					]
-				}
-			}
+				"url": "{{baseUrl}}/api/surveys/{{surveyId}}/report"
+			},
+			"response": []
 		},
 		{
 			"name": "3. Votar",
@@ -104,44 +88,60 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "{{baseUrl}}/api/surveys/{{surveyId}}/vote",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"surveys",
-						"{{surveyId}}",
-						"vote"
-					]
-				}
-			}
+				"url": "{{baseUrl}}/api/surveys/{{surveyId}}/vote"
+			},
+			"response": []
 		},
 		{
 			"name": "4. Conferir Resultado",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/api/surveys/{{surveyId}}/report",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"api",
-						"surveys",
-						"{{surveyId}}",
-						"report"
-					]
-				}
+				"url": "{{baseUrl}}/api/surveys/{{surveyId}}/report"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
 			}
 		}
 	],
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:5000",
+			"value": "http://localhost:5156",
+			"type": "string"
+		},
+		{
+			"key": "surveyId",
+			"value": "bd84d96f-efa2-4527-b948-a46f82626bdb"
+		},
+		{
+			"key": "questionId",
+			"value": "447dab60-d2cb-4aa6-a9ed-ce884355b7c4",
+			"type": "string"
+		},
+		{
+			"key": "optionId",
+			"value": "25c1b3fc-cf92-4f53-94bc-89068f349514",
 			"type": "string"
 		}
 	]

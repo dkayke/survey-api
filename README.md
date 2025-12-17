@@ -108,6 +108,17 @@ O uso de **Records** para DTOs garante imutabilidade e simplifica a transferênc
 }
 ```
 
+### Postman 
+
+Você pode testar todos os endpoints utilizando o Postman.
+
+Baixe o arquivo da coleção Postman: 👉 [ParkingAPI SurveySystemAPI.postman_collection.json](./SurveySystemAPI.postman_collection.json)
+
+No Postman, clique em Import > Upload Files e selecione o arquivo.
+
+A coleção será carregada com as requisições prontas para uso.
+
+
 ## 7. Diagramas
 
 ### Diagrama de Contexto (Nível 1)
