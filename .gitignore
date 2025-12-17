@@ -1,0 +1,89 @@
+## --------------------------------------------------
+## .NET / ASP.NET Core
+## --------------------------------------------------
+
+# Build results
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# .NET Core
+*.dll
+*.exe
+*.pdb
+*.cache
+*.deps.json
+*.runtimeconfig.json
+
+# Publish
+publish/
+app.publish/
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# Environment variables
+.env
+.env.*
+
+# EF Core
+Migrations/*.cs
+!Migrations/*ContextModelSnapshot.cs
+
+# Docker
+docker-compose.override.yml
+
+# Node (caso use frontend junto)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# Azure / Publish
+*.PublishSettings
+*.pubxml
+*.pubxml.user
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
